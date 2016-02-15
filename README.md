@@ -24,7 +24,7 @@ Include jupitern/docx in your project, by adding it to your composer.json file.
 $dir = 'C:\\www\\docx\\';
 
 // Docx template
-$docx = Docx::instance()
+$docx = \Jupitern\Docx\Docx::instance()
 			->setTemplate($dir.'template.docx')
 			->setData(['{name}' => 'john doe', '{address}' => 'at the end of the road'])
 			->save($dir.'result.docx');
