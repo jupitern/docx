@@ -5,7 +5,7 @@
  * Date: 05.02.14
  * Time: 11:59
  */
-namespace Jupitern\Lib\Docx;
+namespace Jupitern\Docx\Lib;
 
 
 class Docx {

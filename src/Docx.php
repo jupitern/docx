@@ -1,7 +1,7 @@
 <?php
 
 namespace Jupitern\Docx;
-use Jupitern\Lib;
+use Jupitern\Docx\Lib as DocxLib;
 
 class Docx {
 
@@ -17,12 +17,20 @@ class Docx {
 	}
 
 
+	/**
+	 * @param $templateFilePath
+	 * @return $this
+	 */
 	public function setTemplate($templateFilePath)
 	{
 		$this->templateFilePath = $templateFilePath;
 		return $this;
 	}
 
+	/**
+	 * @param $data
+	 * @return $this
+	 */
 	public function setData($data)
 	{
 		$this->data = $data;
@@ -30,6 +38,11 @@ class Docx {
 	}
 
 
+	/**
+	 * @param null $outputFilePath
+	 * @return bool
+	 * @throws \Exception
+	 */
 	public function save($outputFilePath = null)
 	{
 		if ( !file_exists( $this->templateFilePath ) ) {
@@ -43,7 +56,7 @@ class Docx {
 			throw new \Exception("error creating output file {$outputFilePath}");
 		}
 
-		$docx = new Lib\Docx( $outputFilePath );
+		$docx = new DocxLib\Docx($outputFilePath);
 		$docx->loadHeadersAndFooters();
 		foreach ($this->data as $key => $value) {
 			$docx->findAndReplace( $key, $value );
@@ -51,38 +64,6 @@ class Docx {
 
 		$docx->flush();
 		return true;
-	}
-
-	/**
-	 * Merge files in $docxFilesArray order and
-	 * create new file $outDocxFilePath
-	 * @param $docxFilesArray
-	 * @param $outDocxFilePath
-	 * @return int
-	 */
-	public static function merge( $docxFilesArray, $outDocxFilePath, $addPageBreak = false ) {
-		if ( count($docxFilesArray) == 0 ) {
-			// No files to merge
-			return -1;
-		}
-
-		if ( substr( $outDocxFilePath, -5 ) != ".docx" ) {
-			$outDocxFilePath .= ".docx";
-		}
-
-		if ( !copy( $docxFilesArray[0], $outDocxFilePath ) ) {
-			// Cannot create file
-			return -2;
-		}
-
-		$docx = new Lib\Docx( $outDocxFilePath );
-		for( $i=1; $i<count( $docxFilesArray ); $i++ ) {
-			$docx->addFile( $docxFilesArray[$i], "part".$i.".docx", "rId10".$i, $addPageBreak );
-		}
-
-		$docx->flush();
-
-		return 0;
 	}
 
 }
