@@ -1,7 +1,7 @@
 {
   "name"       : "jupitern/docx",
   "description": "php docx file merge",
-  "keywords"   : ["docx", "docx template", "docx merge" "php"],
+  "keywords"   : ["docx", "docx template", "docx merge", "php"],
   "homepage"   : "https://github.com/jupitern/docx",
   "license"    : "MIT",
   "authors"    : [
