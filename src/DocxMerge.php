@@ -1,9 +1,11 @@
 <?php
 
 namespace Jupitern\Docx;
+
 use Jupitern\Docx\Lib as DocxLib;
 
-class DocxMerge {
+class DocxMerge
+{
 
 	private $files = [];
 
@@ -50,14 +52,14 @@ class DocxMerge {
 			return false;
 		}
 
-		if ( !copy($this->files[0], $outDocxFilePath) ) {
+		if (!copy($this->files[0], $outDocxFilePath)) {
 			// Cannot create file
 			throw new \Exception("error saving output file {$outDocxFilePath}");
 		}
 
 		$docx = new DocxLib\Docx($outDocxFilePath);
-		for ($i=1; $i < count($this->files); $i++) {
-			$docx->addFile( $this->files[$i], "part".$i.".docx", "rId10".$i, $addPageBreak );
+		for ($i = 1; $i < count($this->files); $i++) {
+			$docx->addFile($this->files[$i], "part" . $i . ".docx", "rId10" . $i, $addPageBreak);
 		}
 
 		$docx->flush();

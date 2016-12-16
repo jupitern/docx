@@ -3,6 +3,7 @@
 
 - docx template system
 - merge docx files on one file
+- optionally add page break between merged files
 
 ## Requirements
 
@@ -31,7 +32,9 @@ $docx = \Jupitern\Docx\Docx::instance()
 
 // Merge Docx files
 $docxMerge = \Jupitern\Docx\DocxMerge::instance()
+    // add array of files to merge
 	->addFiles([$dir.'file1.docx', $dir.'file2.docx'])
+    // output filepath and pagebreak param
 	->save($dir.'result.docx', true);
 
 ```

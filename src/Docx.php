@@ -1,9 +1,11 @@
 <?php
 
 namespace Jupitern\Docx;
+
 use Jupitern\Docx\Lib as DocxLib;
 
-class Docx {
+class Docx
+{
 
 	private $templateFilePath;
 	private $data = [];
@@ -45,21 +47,20 @@ class Docx {
 	 */
 	public function save($outputFilePath = null)
 	{
-		if ( !file_exists( $this->templateFilePath ) ) {
+		if (!file_exists($this->templateFilePath)) {
 			throw new \Exception("template file {$this->templateFilePath} not found");
 		}
 
 		if ($outputFilePath === null) {
 			$outputFilePath = $this->templateFilePath;
-		}
-		elseif (!copy( $this->templateFilePath, $outputFilePath ) ) {
+		} elseif (!copy($this->templateFilePath, $outputFilePath)) {
 			throw new \Exception("error creating output file {$outputFilePath}");
 		}
 
 		$docx = new DocxLib\Docx($outputFilePath);
 		$docx->loadHeadersAndFooters();
 		foreach ($this->data as $key => $value) {
-			$docx->findAndReplace( $key, $value );
+			$docx->findAndReplace($key, $value);
 		}
 
 		$docx->flush();
