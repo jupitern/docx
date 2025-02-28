@@ -23,14 +23,14 @@ class Docx
 
 	private $docxZip;
 
-	private $RELS_ZIP_PATH = "word/_rels/document.xml.rels";
-	private $DOC_ZIP_PATH = "word/document.xml";
-	private $CONTENT_TYPES_PATH = "[Content_Types].xml";
-	private $ALT_CHUNK_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk";
-	private $ALT_CHUNK_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml";
+	private string $RELS_ZIP_PATH = "word/_rels/document.xml.rels";
+	private string $DOC_ZIP_PATH = "word/document.xml";
+	private string $CONTENT_TYPES_PATH = "[Content_Types].xml";
+	private string $ALT_CHUNK_TYPE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk";
+	private string $ALT_CHUNK_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml";
 
 	// Array "zip path" => "content"
-	private $headerAndFootersArray = [];
+	private array $headerAndFootersArray = [];
 
 	public function __construct($docxPath)
 	{
@@ -51,8 +51,8 @@ class Docx
 		return $content;
 	}
 
-	private function writeContent($content, $zipPath)
-	{
+	private function writeContent($content, $zipPath): int
+    {
 		$this->docxZip->FileReplace($zipPath, $content, TBSZIP_STRING);
 		return 0;
 	}

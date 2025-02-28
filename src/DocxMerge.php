@@ -7,23 +7,23 @@ use Jupitern\Docx\Lib as DocxLib;
 class DocxMerge
 {
 
-	private $files = [];
+	private array $files = [];
 
 	/**
 	 * @return static
 	 */
-	public static function instance()
-	{
+	public static function instance(): DocxMerge
+    {
 		return new static();
 	}
 
 
-	/**
-	 * @param $filePath
-	 * @return $this
-	 */
-	public function addFile($filePath)
-	{
+    /**
+     * @param string $filePath
+     * @return $this
+     */
+	public function addFile(string $filePath): DocxMerge
+    {
 		$this->files[] = $filePath;
 		return $this;
 	}
@@ -32,21 +32,21 @@ class DocxMerge
 	 * @param array $filesPathArr
 	 * @return $this
 	 */
-	public function addFiles(array $filesPathArr)
-	{
+	public function addFiles(array $filesPathArr): DocxMerge
+    {
 		$this->files = array_merge($this->files, $filesPathArr);
 		return $this;
 	}
 
 
-	/**
-	 * @param $outDocxFilePath
-	 * @param bool $addPageBreak
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function save($outDocxFilePath, $addPageBreak = false)
-	{
+    /**
+     * @param string $outDocxFilePath
+     * @param bool $addPageBreak
+     * @return bool
+     * @throws \Exception
+     */
+	public function save(string $outDocxFilePath, bool $addPageBreak = false): bool
+    {
 		if (!count($this->files)) {
 			// No files to merge
 			return false;

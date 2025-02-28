@@ -1,52 +1,51 @@
 <?php
 
 namespace Jupitern\Docx;
-
 use Jupitern\Docx\Lib as DocxLib;
 
 class Docx
 {
 
-	private $templateFilePath;
-	private $data = [];
+	private string $templateFilePath;
+	private array $data = [];
 
 	/**
 	 * @return static
 	 */
-	public static function instance()
-	{
+	public static function instance(): Docx
+    {
 		return new static();
 	}
 
 
-	/**
-	 * @param $templateFilePath
-	 * @return $this
-	 */
-	public function setTemplate($templateFilePath)
-	{
+    /**
+     * @param string $templateFilePath
+     * @return $this
+     */
+	public function setTemplate(string $templateFilePath): Docx
+    {
 		$this->templateFilePath = $templateFilePath;
 		return $this;
 	}
 
-	/**
-	 * @param $data
-	 * @return $this
-	 */
-	public function setData($data)
-	{
+    /**
+     * @param array $data
+     * @return $this
+     */
+	public function setData(array $data): Docx
+    {
 		$this->data = $data;
 		return $this;
 	}
 
 
-	/**
-	 * @param null $outputFilePath
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function save($outputFilePath = null)
-	{
+    /**
+     * @param string|null $outputFilePath
+     * @return bool
+     * @throws \Exception
+     */
+	public function save(?string $outputFilePath = null): bool
+    {
 		if (!file_exists($this->templateFilePath)) {
 			throw new \Exception("template file {$this->templateFilePath} not found");
 		}

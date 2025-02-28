@@ -15,8 +15,8 @@
     "source": "https://github.com/jupitern/docx",
     "issues": "https://github.com/jupitern/docx/issues"
   },
-  "require"    :{
-    "php":">=5.4"
+  "require"    : {
+    "php":">=8.2"
   },
   "autoload": {
     "psr-4": {
