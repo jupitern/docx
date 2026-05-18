@@ -10,7 +10,7 @@ class DocxMerge
 	private array $files = [];
 
 	/**
-	 * @return static
+	 * @return self
 	 */
 	public static function instance(): DocxMerge
     {
@@ -20,7 +20,7 @@ class DocxMerge
 
     /**
      * @param string $filePath
-     * @return $this
+     * @return self
      */
 	public function addFile(string $filePath): DocxMerge
     {
@@ -30,7 +30,7 @@ class DocxMerge
 
 	/**
 	 * @param array $filesPathArr
-	 * @return $this
+	 * @return self
 	 */
 	public function addFiles(array $filesPathArr): DocxMerge
     {

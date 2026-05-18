@@ -7,35 +7,31 @@
 
 ## Requirements
 
-PHP 5.4 or higher.
+PHP 8.3 or higher.
 
 ## Installation
 
-Include jupitern/docx in your project, by adding it to your composer.json file.
+Pull the package via composer.
+
 ```javascript
-{
-    "require": {
-        "jupitern/docx": "1.*"
-    }
-}
+composer require jupitern/docx
 ```
 
 ## Usage
 ```php
-$dir = 'C:\\www\\docx\\';
 
 // Docx template
 $docx = \Jupitern\Docx\Docx::instance()
-			->setTemplate($dir.'template.docx')
+			->setTemplate('template.docx')
 			->setData(['{name}' => 'john doe', '{address}' => 'at the end of the road'])
-			->save($dir.'result.docx');
+			->save('result.docx');
 
 // Merge Docx files
 $docxMerge = \Jupitern\Docx\DocxMerge::instance()
     // add array of files to merge
-	->addFiles([$dir.'file1.docx', $dir.'file2.docx'])
+	->addFiles(['file1.docx', 'file2.docx'])
     // output filepath and pagebreak param
-	->save($dir.'result.docx', true);
+	->save('result.docx', true);
 
 ```
 

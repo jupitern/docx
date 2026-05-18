@@ -10,7 +10,7 @@ class Docx
 	private array $data = [];
 
 	/**
-	 * @return static
+	 * @return self
 	 */
 	public static function instance(): Docx
     {
@@ -20,7 +20,7 @@ class Docx
 
     /**
      * @param string $templateFilePath
-     * @return $this
+     * @return self
      */
 	public function setTemplate(string $templateFilePath): Docx
     {
@@ -30,7 +30,7 @@ class Docx
 
     /**
      * @param array $data
-     * @return $this
+     * @return self
      */
 	public function setData(array $data): Docx
     {
@@ -52,6 +52,7 @@ class Docx
 
 		if ($outputFilePath === null) {
 			$outputFilePath = $this->templateFilePath;
+			
 		} elseif (!copy($this->templateFilePath, $outputFilePath)) {
 			throw new \Exception("error creating output file {$outputFilePath}");
 		}
@@ -63,6 +64,7 @@ class Docx
 		}
 
 		$docx->flush();
+
 		return true;
 	}
 
