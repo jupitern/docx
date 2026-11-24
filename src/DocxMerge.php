@@ -9,16 +9,12 @@ class DocxMerge
 
 	private array $files = [];
 
-	final public function __construct()
-	{
-	}
-
 	/**
 	 * @return self
 	 */
 	public static function instance(): DocxMerge
     {
-		return new static();
+		return new self();
 	}
 
 

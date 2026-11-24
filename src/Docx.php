@@ -9,16 +9,12 @@ class Docx
 	private string $templateFilePath;
 	private array $data = [];
 
-	final public function __construct()
-	{
-	}
-
 	/**
 	 * @return self
 	 */
 	public static function instance(): Docx
     {
-		return new static();
+		return new self();
 	}
 
 
