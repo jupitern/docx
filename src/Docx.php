@@ -9,6 +9,10 @@ class Docx
 	private string $templateFilePath;
 	private array $data = [];
 
+	final public function __construct()
+	{
+	}
+
 	/**
 	 * @return self
 	 */

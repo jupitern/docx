@@ -7,21 +7,20 @@
  */
 namespace Jupitern\Docx\Lib;
 
-
 class Docx
 {
 
 	// Path to current docx file
-	private $docxPath;
+	private string $docxPath;
 
 	// Current _RELS data
-	private $docxRels;
+	private mixed $docxRels;
 	// Current DOCUMENT data
-	private $docxDocument;
+	private mixed $docxDocument;
 	// Current CONTENT_TYPES data
-	private $docxContentTypes;
+	private mixed $docxContentTypes;
 
-	private $docxZip;
+	private TbsZip $docxZip;
 
 	private string $RELS_ZIP_PATH = "word/_rels/document.xml.rels";
 	private string $DOC_ZIP_PATH = "word/document.xml";
@@ -32,7 +31,7 @@ class Docx
 	// Array "zip path" => "content"
 	private array $headerAndFootersArray = [];
 
-	public function __construct($docxPath)
+	public function __construct(string $docxPath)
 	{
 		$this->docxPath = $docxPath;
 
@@ -44,20 +43,20 @@ class Docx
 		$this->docxContentTypes = $this->readContent($this->CONTENT_TYPES_PATH);
 	}
 
-	private function readContent($zipPath)
+	private function readContent(string $zipPath)
 	{
 		$content = $this->docxZip->FileRead($zipPath);
 
 		return $content;
 	}
 
-	private function writeContent($content, $zipPath): int
+	private function writeContent(mixed $content, string $zipPath): int
     {
 		$this->docxZip->FileReplace($zipPath, $content, TBSZIP_STRING);
 		return 0;
 	}
 
-	public function addFile($filePath, $zipName, $refID, $addPageBreak = false)
+	public function addFile(string $filePath, mixed $zipName, string $refID, bool $addPageBreak = false)
 	{
 		$content = file_get_contents($filePath);
 		$this->docxZip->FileAdd($zipName, $content);
@@ -67,7 +66,7 @@ class Docx
 		$this->addContentType($zipName);
 	}
 
-	private function addReference($zipName, $refID)
+	private function addReference(string $zipName, string $refID)
 	{
 		$relXmlString = '<Relationship Target="../' . $zipName . '" Type="' . $this->ALT_CHUNK_TYPE . '" Id="' . $refID . '"/>';
 
@@ -75,16 +74,16 @@ class Docx
 		$this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
 	}
 
-	private function addAltChunk($refID, $addPageBreak)
+	private function addAltChunk(string $refID, bool $addPageBreak)
 	{
-		$pagebreak = $addPageBreak ? '<w:p><w:r><w:br w:type="page" /></w:r></w:p>' : '';
+		$pagebreak = $addPageBreak ? '<w:p><w:pPr><w:sectPr><w:type w:val="nextPage" /></w:sectPr></w:pPr></w:p>' : '';
 		$xmlItem = $pagebreak . '<w:altChunk r:id="' . $refID . '"/>';
 
 		$p = strpos($this->docxDocument, '</w:body>');
 		$this->docxDocument = substr_replace($this->docxDocument, $xmlItem, $p, 0);
 	}
 
-	private function addContentType($zipName)
+	private function addContentType(string $zipName)
 	{
 		$xmlItem = '<Override ContentType="' . $this->ALT_CHUNK_CONTENT_TYPE . '" PartName="/' . $zipName . '"/>';
 
@@ -105,7 +104,7 @@ class Docx
 		}
 	}
 
-	public function findAndReplace($key, $value)
+	public function findAndReplace(array|string $key, array|string $value)
 	{
 		// Search/Replace in document
 		$this->docxDocument = str_replace($key, $value, $this->docxDocument);

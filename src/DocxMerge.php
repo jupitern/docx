@@ -9,6 +9,10 @@ class DocxMerge
 
 	private array $files = [];
 
+	final public function __construct()
+	{
+	}
+
 	/**
 	 * @return self
 	 */
