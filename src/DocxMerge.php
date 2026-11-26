@@ -8,8 +8,7 @@ class DocxMerge
 {
 
 	public const BREAK_NONE = 'none';
-	public const BREAK_PAGE = 'page';           // new page, keep header and footer from base docx
-	public const BREAK_SECTION = 'section';     // new page + new section, keep header and footer from orignal docs
+	public const BREAK_PAGE = 'page'; // new page + new section, keep header and footer from each docx
 
 	private array $files = [];
 
@@ -64,8 +63,8 @@ class DocxMerge
 		}
 
 		$docx = new DocxLib\Docx($outDocxFilePath);
-		foreach ($this->files as $f) {
-			$docx->addFile($f, $addPageBreak);
+		foreach (array_slice($this->files, 1) as $filePath) {
+			$docx->addFile($filePath, $addPageBreak);
 		}
 
 		$docx->flush();
