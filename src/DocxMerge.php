@@ -7,6 +7,10 @@ use Jupitern\Docx\Lib as DocxLib;
 class DocxMerge
 {
 
+	public const BREAK_NONE = 'none';
+	public const BREAK_PAGE = 'page';           // new page, keep header and footer from base docx
+	public const BREAK_SECTION = 'section';     // new page + new section, keep header and footer from orignal docs
+
 	private array $files = [];
 
 	/**
@@ -34,18 +38,21 @@ class DocxMerge
 	 */
 	public function addFiles(array $filesPathArr): DocxMerge
     {
-		$this->files = array_merge($this->files, $filesPathArr);
+		foreach ($filesPathArr as $filePath) {
+			$this->files[] = $filePath;
+		}
+
 		return $this;
 	}
 
 
     /**
      * @param string $outDocxFilePath
-     * @param bool $addPageBreak
+     * @param string $addPageBreak
      * @return bool
      * @throws \Exception
      */
-	public function save(string $outDocxFilePath, bool $addPageBreak = false): bool
+	public function save(string $outDocxFilePath, string $addPageBreak = self::BREAK_NONE): bool
     {
 		if (!count($this->files)) {
 			// No files to merge

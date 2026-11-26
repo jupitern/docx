@@ -10,6 +10,10 @@ namespace Jupitern\Docx\Lib;
 class Docx
 {
 
+	public const BREAK_NONE = 'none';
+	public const BREAK_PAGE = 'page';           // new page, keep header and footer from base docx
+	public const BREAK_SECTION = 'section';     // new page + new section, keep header and footer from orignal docs
+
 	// Path to current docx file
 	private string $docxPath;
 
@@ -56,7 +60,7 @@ class Docx
 		return 0;
 	}
 
-	public function addFile(string $filePath, mixed $zipName, string $refID, bool $addPageBreak = false)
+	public function addFile(string $filePath, mixed $zipName, string $refID, string $addPageBreak = self::BREAK_NONE): void
 	{
 		$content = file_get_contents($filePath);
 		$this->docxZip->FileAdd($zipName, $content);
@@ -74,9 +78,19 @@ class Docx
 		$this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
 	}
 
-	private function addAltChunk(string $refID, bool $addPageBreak)
+	private function addAltChunk(string $refID, string $pageBreak = self::BREAK_NONE)
 	{
-		$pagebreak = $addPageBreak ? '<w:p><w:pPr><w:sectPr><w:type w:val="nextPage" /></w:sectPr></w:pPr></w:p>' : '';
+		switch ($pageBreak) {
+			case self::BREAK_PAGE:
+				$pagebreak = '<w:p><w:r><w:br w:type="page" /></w:r></w:p>';
+				break;
+			case self::BREAK_SECTION:
+				$pagebreak = '<w:p><w:pPr><w:sectPr><w:type w:val="nextPage" /></w:sectPr></w:pPr></w:p>';
+				break;
+			default:
+				$pagebreak = '';
+				break;
+		}
 		$xmlItem = $pagebreak . '<w:altChunk r:id="' . $refID . '"/>';
 
 		$p = strpos($this->docxDocument, '</w:body>');
