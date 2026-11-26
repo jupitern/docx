@@ -1,9 +1,8 @@
 # jupitern/docx
 #### PHP Docx tolls.
 
-- docx template system
-- merge docx files on one file
-- optionally add page break between merged files
+- docx "mail merge" template engine
+- merge docx files on one file (with or without page breaks)
 
 ## Requirements
 
@@ -20,18 +19,27 @@ composer require jupitern/docx
 ## Usage
 ```php
 
-// Docx template
-$docx = \Jupitern\Docx\Docx::instance()
+// Docx template engine. fill placeholders on docx file
+\Jupitern\Docx\Docx::instance()
 			->setTemplate('template.docx')
 			->setData(['{name}' => 'john doe', '{address}' => 'at the end of the road'])
 			->save('result.docx');
 
-// Merge Docx files
-$docxMerge = \Jupitern\Docx\DocxMerge::instance()
-    // add array of files to merge
+
+// merge two docx without page break
+\Jupitern\Docx\DocxMerge::instance()
 	->addFiles(['file1.docx', 'file2.docx'])
-    // output filepath and pagebreak param
-	->save('result.docx', true);
+	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_NONE);
+
+// merge two docx with simple page break. header and footer from first document are used
+\Jupitern\Docx\DocxMerge::instance()
+	->addFiles(['file1.docx', 'file2.docx'])
+	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_PAGE);
+
+// merge two docx with section and page break. header and footer from first document are used
+\Jupitern\Docx\DocxMerge::instance()
+	->addFiles(['file1.docx', 'file2.docx'])
+	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_PAGE);
 
 ```
 
