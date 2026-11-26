@@ -34,6 +34,7 @@ class Docx
 
 	// Array "zip path" => "content"
 	private array $headerAndFootersArray = [];
+	private array $addedZipNames = [];
 
 	public function __construct(string $docxPath)
 	{
@@ -60,25 +61,40 @@ class Docx
 		return 0;
 	}
 
-	public function addFile(string $filePath, mixed $zipName, string $refID, string $addPageBreak = self::BREAK_NONE): void
+	public function addFile(string $filePath, string $addPageBreak = self::BREAK_NONE, ?string $zipName = null, ?string $refID = null): void
 	{
-		$content = file_get_contents($filePath);
-		$this->docxZip->FileAdd($zipName, $content);
+		if (!is_file($filePath)) {
+			return;
+		}
 
-		$this->addReference($zipName, $refID);
-		$this->addAltChunk($refID, $addPageBreak);
-		$this->addContentType($zipName);
+		$content = file_get_contents($filePath);
+		if ($content === false) {
+			return;
+		}
+
+		$uniqueZipName = $this->resolveUniqueZipName($zipName ?? 'word/afchunk.docx');
+		$uniqueRefId = $this->resolveUniqueRefId($refID ?? '');
+
+		$this->docxZip->FileAdd($uniqueZipName, $content);
+		$this->addedZipNames[] = $uniqueZipName;
+
+		$this->addReference($uniqueZipName, $uniqueRefId);
+		$this->addAltChunk($uniqueRefId, $addPageBreak);
+		$this->addContentType($uniqueZipName);
 	}
 
-	private function addReference(string $zipName, string $refID)
+	private function addReference(string $zipName, string $refID): void
 	{
-		$relXmlString = '<Relationship Target="../' . $zipName . '" Type="' . $this->ALT_CHUNK_TYPE . '" Id="' . $refID . '"/>';
+		$cleanZipName = ltrim($zipName, '/');
+		$relXmlString = '<Relationship Target="../' . $cleanZipName . '" Type="' . $this->ALT_CHUNK_TYPE . '" Id="' . $refID . '"/>';
 
 		$p = strpos($this->docxRels, '</Relationships>');
-		$this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
+		if ($p !== false) {
+			$this->docxRels = substr_replace($this->docxRels, $relXmlString, $p, 0);
+		}
 	}
 
-	private function addAltChunk(string $refID, string $pageBreak = self::BREAK_NONE)
+	private function addAltChunk(string $refID, string $pageBreak = self::BREAK_NONE): void
 	{
 		switch ($pageBreak) {
 			case self::BREAK_PAGE:
@@ -91,10 +107,60 @@ class Docx
 				$pagebreak = '';
 				break;
 		}
+
 		$xmlItem = $pagebreak . '<w:altChunk r:id="' . $refID . '"/>';
 
 		$p = strpos($this->docxDocument, '</w:body>');
-		$this->docxDocument = substr_replace($this->docxDocument, $xmlItem, $p, 0);
+		if ($p !== false) {
+			$this->docxDocument = substr_replace($this->docxDocument, $xmlItem, $p, 0);
+		}
+	}
+
+	private function resolveUniqueRefId(string $preferredId): string
+	{
+		preg_match_all('/\bId="(rId\d+)"/', $this->docxRels, $matches);
+		$existingIds = $matches[1] ?? [];
+
+		if ($preferredId !== '' && !in_array($preferredId, $existingIds, true)) {
+			return $preferredId;
+		}
+
+		$maxNum = 0;
+		foreach ($existingIds as $id) {
+			$num = (int) substr($id, 3);
+			if ($num > $maxNum) {
+				$maxNum = $num;
+			}
+		}
+
+		do {
+			$maxNum++;
+			$candidate = 'rId' . $maxNum;
+		} while (in_array($candidate, $existingIds, true));
+
+		return $candidate;
+	}
+
+	private function resolveUniqueZipName(string $preferredZipName): string
+	{
+		$baseName = trim($preferredZipName) !== '' ? ltrim($preferredZipName, '/') : 'word/afchunk.docx';
+
+		if (!$this->docxZip->FileExists($baseName) && !in_array($baseName, $this->addedZipNames, true)) {
+			return $baseName;
+		}
+
+		$pathInfo = pathinfo($baseName);
+		$dir = (!empty($pathInfo['dirname']) && $pathInfo['dirname'] !== '.') ? $pathInfo['dirname'] . '/' : '';
+		$filename = $pathInfo['filename'] ?? 'afchunk';
+		$ext = !empty($pathInfo['extension']) ? '.' . $pathInfo['extension'] : '.docx';
+
+		$counter = 1;
+		do {
+			$candidate = $dir . $filename . '_' . $counter . $ext;
+			$counter++;
+		} while ($this->docxZip->FileExists($candidate) || in_array($candidate, $this->addedZipNames, true));
+
+		return $candidate;
 	}
 
 	private function addContentType(string $zipName)

@@ -29,6 +29,7 @@ class DocxMerge
 	public function addFile(string $filePath): DocxMerge
     {
 		$this->files[] = $filePath;
+
 		return $this;
 	}
 
@@ -38,9 +39,7 @@ class DocxMerge
 	 */
 	public function addFiles(array $filesPathArr): DocxMerge
     {
-		foreach ($filesPathArr as $filePath) {
-			$this->files[] = $filePath;
-		}
+		$this->files = array_merge($this->files, $filesPathArr);
 
 		return $this;
 	}
@@ -65,11 +64,12 @@ class DocxMerge
 		}
 
 		$docx = new DocxLib\Docx($outDocxFilePath);
-		for ($i = 1; $i < count($this->files); $i++) {
-			$docx->addFile($this->files[$i], "part" . $i . ".docx", "rId10" . $i, $addPageBreak);
+		foreach ($this->files as $f) {
+			$docx->addFile($f, $addPageBreak);
 		}
 
 		$docx->flush();
+		
 		return true;
 	}
 
