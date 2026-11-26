@@ -10,12 +10,14 @@ for TinyButStrong Template Engine (TBS). OpenTbs makes TBS able to merge OpenOff
 Visit http://www.tinybutstrong.com
 */
 
+namespace Jupitern\Docx\Lib;
+
 define('TBSZIP_DOWNLOAD',1);   // download (default)
 define('TBSZIP_NOHEADER',4);   // option to use with DOWNLOAD: no header is sent
 define('TBSZIP_FILE',8);       // output to file  , or add from file
 define('TBSZIP_STRING',32);    // output to string, or add from string
 
-class clsTbsZip {
+class TbsZip {
 
 	public $Meth8Ok;
 	public $DisplayError;
