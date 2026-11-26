@@ -36,10 +36,10 @@ composer require jupitern/docx
 	->addFiles(['file1.docx', 'file2.docx'])
 	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_PAGE);
 
-// merge two docx with section and page break. header and footer from first document are used
+// merge two docx with section and page break. header and footer from each document remain intact
 \Jupitern\Docx\DocxMerge::instance()
 	->addFiles(['file1.docx', 'file2.docx'])
-	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_PAGE);
+	->save('result.docx', \Jupitern\Docx\DocxMerge::BREAK_SECTION);
 
 ```
 
